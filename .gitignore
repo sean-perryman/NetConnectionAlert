@@ -1,1 +1,5 @@
-a.out
+#ignore compiled binary
+*.out
+
+#ignore compile script
+go.sh

@@ -3,11 +3,12 @@ and may not be redistributed without written permission.*/
 
 //Using SDL and standard IO
 #include "/usr/local/Cellar/sdl2/2.0.3/include/SDL2/SDL.h"
+#include "/usr/local/Cellar/sdl2_image/2.0.1_1/include/SDL2/SDL_image.h"
 #include <stdio.h>
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 320;
+const int SCREEN_HEIGHT = 320;
 
 //Starts up SDL and creates window
 bool init();
@@ -25,25 +26,11 @@ SDL_Window* gWindow = NULL;
 SDL_Surface* gScreenSurface = NULL;
 
 //The image we will load and show on the screen
-SDL_Surface* gHelloWorld = NULL;
+SDL_Surface* gStatus = NULL;
 
-//Quit by pressing X code - http://stackoverflow.com/questions/9140479/close-the-program-when-the-user-presses-the-x-button-with-sdl
-class SystemManager {
-    public:
-        // Here we will just have a couple public members for example purposes.
-        bool running;
-        SDL_Event events;
-        void inputManager(); // Handle input.
-        void renderingManager(); // Handle drawing pretty pictures.
-};
-
-void SystemManager::inputManager() {
-    while(SDL_PollEvent(&events)) {
-        if(events.type == SDL_QUIT)
-            running = false;
-    }
-}
-//END
+//Boolean to store game status
+bool gameRunning = true;
+SDL_Event event;
 
 bool init()
 {
@@ -81,10 +68,10 @@ bool loadMedia()
 	bool success = true;
 
 	//Load splash image
-	gHelloWorld = SDL_LoadBMP( "hello_world.bmp" );
-	if( gHelloWorld == NULL )
+	gStatus = IMG_Load( "status.png" );
+	if( gStatus == NULL )
 	{
-		printf( "Unable to load image %s! SDL Error: %s\n", "hello_world.bmp", SDL_GetError() );
+		printf( "Unable to load image %s! SDL Error: %s\n", "status.png", SDL_GetError() );
 		success = false;
 	}
 
@@ -94,8 +81,8 @@ bool loadMedia()
 void close()
 {
 	//Deallocate surface
-	SDL_FreeSurface( gHelloWorld );
-	gHelloWorld = NULL;
+	SDL_FreeSurface( gStatus );
+	gStatus = NULL;
 
 	//Destroy window
 	SDL_DestroyWindow( gWindow );
@@ -122,13 +109,21 @@ int main( int argc, char* args[] )
 		else
 		{
 			//Apply the image
-			SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
+			SDL_BlitSurface( gStatus, NULL, gScreenSurface, NULL );
 			
 			//Update the surface
 			SDL_UpdateWindowSurface( gWindow );
 
-			//Wait two seconds
-			SDL_Delay( 10000 );
+			//Game Loo
+			
+			while (gameRunning) {
+				//Do things here
+				if (SDL_PollEvent(&event)) {
+					if (event.type == SDL_QUIT) {
+						gameRunning = false;
+					}
+				} 
+			}
 		}
 	}
 
