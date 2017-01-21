@@ -1,40 +1,139 @@
-// Example program:
-// Using SDL2 to create an application window
+/*This source code copyrighted by Lazy Foo' Productions (2004-2015)
+and may not be redistributed without written permission.*/
 
+//Using SDL and standard IO
 #include "/usr/local/Cellar/sdl2/2.0.3/include/SDL2/SDL.h"
 #include <stdio.h>
 
-int main(int argc, char* argv[]) {
+//Screen dimension constants
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
 
-    SDL_Window *window;                    // Declare a pointer
+//Starts up SDL and creates window
+bool init();
 
-    SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
+//Loads media
+bool loadMedia();
 
-    // Create an application window with the following settings:
-    window = SDL_CreateWindow(
-        "An SDL2 window",                  // window title
-        SDL_WINDOWPOS_UNDEFINED,           // initial x position
-        SDL_WINDOWPOS_UNDEFINED,           // initial y position
-        640,                               // width, in pixels
-        480,                               // height, in pixels
-        SDL_WINDOW_OPENGL                  // flags - see below
-    );
+//Frees media and shuts down SDL
+void close();
 
-    // Check that the window was successfully created
-    if (window == NULL) {
-        // In the case that the window could not be made...
-        printf("Could not create window: %s\n", SDL_GetError());
-        return 1;
+//The window we'll be rendering to
+SDL_Window* gWindow = NULL;
+	
+//The surface contained by the window
+SDL_Surface* gScreenSurface = NULL;
+
+//The image we will load and show on the screen
+SDL_Surface* gHelloWorld = NULL;
+
+//Quit by pressing X code - http://stackoverflow.com/questions/9140479/close-the-program-when-the-user-presses-the-x-button-with-sdl
+class SystemManager {
+    public:
+        // Here we will just have a couple public members for example purposes.
+        bool running;
+        SDL_Event events;
+        void inputManager(); // Handle input.
+        void renderingManager(); // Handle drawing pretty pictures.
+};
+
+void SystemManager::inputManager() {
+    while(SDL_PollEvent(&events)) {
+        if(events.type == SDL_QUIT)
+            running = false;
     }
+}
+//END
 
-    // The window is open: could enter program loop here (see SDL_PollEvent())
+bool init()
+{
+	//Initialization flag
+	bool success = true;
 
-    SDL_Delay(3000);  // Pause execution for 3000 milliseconds, for example
+	//Initialize SDL
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	{
+		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
+		success = false;
+	}
+	else
+	{
+		//Create window
+		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE );
+		if( gWindow == NULL )
+		{
+			printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
+			success = false;
+		}
+		else
+		{
+			//Get window surface
+			gScreenSurface = SDL_GetWindowSurface( gWindow );
+		}
+	}
 
-    // Close and destroy the window
-    SDL_DestroyWindow(window);
+	return success;
+}
 
-    // Clean up
-    SDL_Quit();
-    return 0;
+bool loadMedia()
+{
+	//Loading success flag
+	bool success = true;
+
+	//Load splash image
+	gHelloWorld = SDL_LoadBMP( "hello_world.bmp" );
+	if( gHelloWorld == NULL )
+	{
+		printf( "Unable to load image %s! SDL Error: %s\n", "hello_world.bmp", SDL_GetError() );
+		success = false;
+	}
+
+	return success;
+}
+
+void close()
+{
+	//Deallocate surface
+	SDL_FreeSurface( gHelloWorld );
+	gHelloWorld = NULL;
+
+	//Destroy window
+	SDL_DestroyWindow( gWindow );
+	gWindow = NULL;
+
+	//Quit SDL subsystems
+	SDL_Quit();
+}
+
+int main( int argc, char* args[] )
+{
+	//Start up SDL and create window
+	if( !init() )
+	{
+		printf( "Failed to initialize!\n" );
+	}
+	else
+	{
+		//Load media
+		if( !loadMedia() )
+		{
+			printf( "Failed to load media!\n" );
+		}
+		else
+		{
+			//Apply the image
+			SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
+			
+			//Update the surface
+			SDL_UpdateWindowSurface( gWindow );
+
+			//Wait two seconds
+			SDL_Delay( 10000 );
+		}
+	}
+
+	//Free resources and close SDL
+	close();
+
+	return 0;
 }
