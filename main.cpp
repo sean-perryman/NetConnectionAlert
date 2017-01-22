@@ -5,6 +5,8 @@ and may not be redistributed without written permission.*/
 #include "/usr/local/Cellar/sdl2/2.0.3/include/SDL2/SDL.h"
 #include "/usr/local/Cellar/sdl2_image/2.0.1_1/include/SDL2/SDL_image.h"
 #include <stdio.h>
+#include <iostream>
+#include <vector>
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 320;
@@ -31,6 +33,12 @@ SDL_Surface* gStatus = NULL;
 //Boolean to store game status
 bool gameRunning = true;
 SDL_Event event;
+
+//Texture rotation stuff
+double angle;
+SDL_Texture* texture;
+SDL_Rect rect;
+SDL_Point center;
 
 bool init()
 {
@@ -90,6 +98,14 @@ void close()
 
 	//Quit SDL subsystems
 	SDL_Quit();
+}
+
+void LoadTexture( SDL_Renderer *renderer, const std::string &str, const SDL_Rect &windowRect )
+{
+		SDL_Surface* surface = IMG_Load( str.c_str() );
+		texture = SDL_CreateTextureFromSurface( renderer, surface );
+		SDL_FreeSurface( surface );
+		//SetInitialPosition( windowRect );
 }
 
 int main( int argc, char* args[] )
