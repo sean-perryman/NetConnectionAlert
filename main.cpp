@@ -20,6 +20,8 @@ int main(int argc, char ** argv)
 	SDL_Surface * image = IMG_Load("status.png");
 	SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
 
+	int rotation = 0;
+
 	while (!quit)
 	{
 		SDL_WaitEvent(&event);
@@ -30,10 +32,10 @@ int main(int argc, char ** argv)
 				quit = true;
 				break;
 		}
-
+		
 		SDL_Rect dstrect = { 0, 0, 320, 320 };
-		SDL_RenderCopyEx(renderer, texture, NULL, &dstrect, 30, NULL, SDL_FLIP_NONE);
-		//SDL_RenderCopy(renderer, texture, NULL, NULL);
+		SDL_SetTextureColorMod( texture, 255, 0, 0 );
+		SDL_RenderCopyEx(renderer, texture, NULL, &dstrect, rotation++, NULL, SDL_FLIP_NONE);
 		SDL_RenderPresent(renderer);
 	}
 
