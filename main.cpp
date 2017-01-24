@@ -1,5 +1,4 @@
-/*This source code copyrighted by Lazy Foo' Productions (2004-2015)
-and may not be redistributed without written permission.*/
+// Code sample from https://bitbucket.org/dandago/gigilabs/src/e2d13fc3664860b0d90759a036f41ed18db81223/Sdl2DisplayImage/Sdl2DisplayImage/main.cpp?at=master&fileviewer=file-view-default
 
 //Using SDL and standard IO
 #include "/usr/local/Cellar/sdl2/2.0.3/include/SDL2/SDL.h"
@@ -33,7 +32,7 @@ int main(int argc, char ** argv)
 		}
 
 		SDL_Rect dstrect = { 0, 0, 320, 320 };
-		SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+		SDL_RenderCopyEx(renderer, texture, NULL, &dstrect, 30, NULL, SDL_FLIP_NONE);
 		//SDL_RenderCopy(renderer, texture, NULL, NULL);
 		SDL_RenderPresent(renderer);
 	}
