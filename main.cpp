@@ -7,6 +7,7 @@ and may not be redistributed without written permission.*/
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include "/usr/local/opt/curl/include/curl/curl.h"
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 320;
