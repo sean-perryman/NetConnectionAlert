@@ -5,10 +5,7 @@
 #include "/usr/local/Cellar/sdl2_image/2.0.1_1/include/SDL2/SDL_image.h"
 #include "/usr/local/opt/curl/include/curl/curl.h"
 
-size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
-{
-   return size * nmemb;
-}
+size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp) { return size * nmemb; }
 
 bool ping() //From: https://curl.haxx.se/libcurl/c/simple.html
 {
@@ -43,7 +40,7 @@ int main(int argc, char ** argv)
 	SDL_Init(SDL_INIT_VIDEO);
 	IMG_Init(IMG_INIT_PNG);
 
-	SDL_Window * window = SDL_CreateWindow("SDL2 Displaying Image",
+	SDL_Window * window = SDL_CreateWindow("Network Connection Alert",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 320, 320, 0);
 
 	SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
