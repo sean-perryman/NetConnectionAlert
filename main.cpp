@@ -5,6 +5,36 @@
 #include "/usr/local/Cellar/sdl2_image/2.0.1_1/include/SDL2/SDL_image.h"
 #include "/usr/local/opt/curl/include/curl/curl.h"
 
+size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
+{
+   return size * nmemb;
+}
+
+bool ping() //From: https://curl.haxx.se/libcurl/c/simple.html
+{
+	CURL *curl;
+  CURLcode res;
+ 
+  curl = curl_easy_init();
+  if(curl) {
+  	curl_easy_setopt(curl, CURLOPT_URL, "http://google.com");
+    
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+ 
+    /* Perform the request, res will get the return code */ 
+    res = curl_easy_perform(curl);
+    /* Check for errors */ 
+    if(res != CURLE_OK)
+    {
+      return false;
+    }
+ 
+    /* always cleanup */ 
+    curl_easy_cleanup(curl);
+  }
+  return true;
+}
+
 int main(int argc, char ** argv)
 {
 	bool quit = false;
@@ -37,6 +67,9 @@ int main(int argc, char ** argv)
 		SDL_SetTextureColorMod( texture, 255, 0, 0 );
 		SDL_RenderCopyEx(renderer, texture, NULL, &dstrect, rotation++, NULL, SDL_FLIP_NONE);
 		SDL_RenderPresent(renderer);
+
+		if (ping()) printf( "Success" );
+		else printf( "Failure" );
 	}
 
 	SDL_DestroyTexture(texture);
