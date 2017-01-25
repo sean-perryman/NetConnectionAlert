@@ -51,7 +51,8 @@ int main(int argc, char ** argv)
 
 	while (!quit)
 	{
-		SDL_WaitEvent(&event);
+		SDL_Delay(500);
+		SDL_PollEvent(&event);
 
 		switch (event.type)
 		{
@@ -65,8 +66,8 @@ int main(int argc, char ** argv)
 		SDL_RenderCopyEx(renderer, texture, NULL, &dstrect, rotation++, NULL, SDL_FLIP_NONE);
 		SDL_RenderPresent(renderer);
 
-		if (ping()) printf( "Success" );
-		else printf( "Failure" );
+		if (ping()) rotation--;
+		else rotation++;
 	}
 
 	SDL_DestroyTexture(texture);
