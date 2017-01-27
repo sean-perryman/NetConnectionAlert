@@ -49,6 +49,8 @@ int main(int argc, char ** argv)
 	SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
 
 	int rotation = 0;
+	int green = 0;
+	int red = 0;
 
 	while (!quit)
 	{
@@ -63,12 +65,26 @@ int main(int argc, char ** argv)
 		}
 		
 		SDL_Rect dstrect = { 0, 0, 320, 320 };
-		SDL_SetTextureColorMod( texture, 255, 0, 0 );
+		SDL_SetTextureColorMod( texture, red, green, 0 );
 		SDL_RenderCopyEx(renderer, texture, NULL, &dstrect, rotation, NULL, SDL_FLIP_NONE);
 		SDL_RenderPresent(renderer);
 
-		if (ping()) rotation = rotation + 18;
-		else rotation = 0;
+		if (!ping() && rotation < 90) 
+		{
+			rotation = rotation + 18;
+		} 
+		else if (!ping() && rotation >= 90)
+		{
+			rotation = 90;
+			red = 255;
+			green = 0;
+		}
+		else 
+		{
+			rotation = 0;
+			green = 255;
+			red = 0;
+		}
 	}
 
 	SDL_DestroyTexture(texture);
